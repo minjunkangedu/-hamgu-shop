@@ -20,30 +20,19 @@
   <h1>✨ 햄구신교 상점 ✨</h1>
   <p>Hamgu는 거룩할지어다!</p>
 
-  <div class="item">
-    <h2>🍎 황금사과</h2>
-    <p class="price">가격: 40 HBC</p>
-    <button onclick="buyItem('황금사과', 40)">구매</button>
-  </div>
+  <!-- 기존 아이템들 -->
+  <div class="item"><h2>🍎 황금사과</h2><p class="price">가격: 40 HBC</p><button onclick="buyItem('황금사과', 40)">구매</button></div>
+  <div class="item"><h2>🍀 럭잼 (10~30%)</h2><p class="price">가격: 20 HBC</p><button onclick="buyItem('럭잼', 20)">구매</button></div>
+  <div class="item"><h2>🧪 경험치 병</h2><p class="price">가격: 10 HBC</p><button onclick="buyItem('경험치 병', 10)">구매</button></div>
+  <div class="item"><h2>🎉 이벤트 티켓</h2><p class="price">가격: 20 HBC</p><button onclick="buyItem('이벤트 티켓', 20)">구매</button></div>
 
-  <div class="item">
-    <h2>🍀 럭잼 (10~30%)</h2>
-    <p class="price">가격: 20 HBC</p>
-    <button onclick="buyItem('럭잼', 20)">구매</button>
-  </div>
+  <!-- 🆕 추가된 아이템들 -->
+  <div class="item"><h2>🐎 특품 말스폰알</h2><p class="price">가격: 50 HBC</p><button onclick="buyItem('특품 말스폰알', 50)">구매</button></div>
+  <div class="item"><h2>🐎 말스폰알</h2><p class="price">가격: 15 HBC</p><button onclick="buyItem('말스폰알', 15)">구매</button></div>
+  <div class="item"><h2>🐪 특품 낙타</h2><p class="price">가격: 45 HBC</p><button onclick="buyItem('특품 낙타', 45)">구매</button></div>
+  <div class="item"><h2>🐪 낙타</h2><p class="price">가격: 13 HBC</p><button onclick="buyItem('낙타', 13)">구매</button></div>
 
-  <div class="item">
-    <h2>🧪 경험치 병</h2>
-    <p class="price">가격: 10 HBC</p>
-    <button onclick="buyItem('경험치 병', 10)">구매</button>
-  </div>
-
-  <div class="item">
-    <h2>🎉 이벤트 티켓</h2>
-    <p class="price">가격: 20 HBC</p>
-    <button onclick="buyItem('이벤트 티켓', 20)">구매</button>
-  </div>
-
+  <!-- 선물, 관리자, 로그 등 -->
   <div class="gift">
     <h2>🎁 코인 선물</h2>
     <input id="targetUser" placeholder="상대 이름">
@@ -86,12 +75,21 @@
 
     function getUser() {
       let name = storage.getItem("current_user");
-      if (!name) {
-        alert("⚠️ 디스코드 닉네임으로 정확하게 입력해주세요! 이후 변경할 수 없습니다. ⚠️");
-        name = prompt("당신의 이름을 입력하세요.\n\n⚠️ *디스코드 닉네임으로 작성해주세요!* ⚠️");
-        if (!name) name = "이름없음";
-        storage.setItem("current_user", name);
+
+      if (!name || name === "이름없음") {
+        let confirmed = confirm("⚠️ 디스코드 닉네임으로 이름을 입력해주세요! 이후 변경할 수 없습니다.\n\n※ 이름이 '이름없음'이면 1회에 한해 다시 입력 가능합니다.");
+        if (confirmed) {
+          const input = prompt("당신의 이름을 입력하세요.\n\n⚠️ *디스코드 닉네임으로 작성해주세요!* ⚠️");
+          if (input) {
+            name = input;
+            storage.setItem("current_user", name);
+          } else {
+            name = "이름없음";
+            storage.setItem("current_user", name);
+          }
+        }
       }
+
       document.getElementById("username").innerText = name;
       return name;
     }
