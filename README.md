@@ -1,3 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>햄구신교 상점</title>
+  <style>
+    body { font-family: 'Arial', sans-serif; background: #fffaf0; color: #333; text-align: center; padding: 20px; }
+    h1 { font-size: 2.5em; margin-bottom: 10px; }
+    .item, .gift, .history, .leaderboard { border: 2px solid #ccc; padding: 15px; margin: 10px auto; width: 300px; border-radius: 10px; background: #fdfdfd; }
+    .price { font-weight: bold; color: #d2691e; }
+    input, button { padding: 8px; margin-top: 5px; }
+    .small { font-size: 0.9em; color: #888; }
+  </style>
+</head>
+<body>
+  
   <h1>✨ 햄구신교 상점 ✨</h1>
   <p>Hamgu는 거룩할지어다!</p>
 
