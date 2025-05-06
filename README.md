@@ -20,14 +20,14 @@
 
   <div class="item">
     <h2>🍎 황금사과</h2>
-    <p class="price">가격: 40 HBC</p>
-    <button onclick="buyItem('황금사과', 40)">구매</button>
+    <p class="price">가격: 2 HBC</p>
+    <button onclick="buyItem('황금사과', 2)">구매</button>
   </div>
 
   <div class="item">
     <h2>🍀 럭잼 (10~30%)</h2>
-    <p class="price">가격: 20 HBC</p>
-    <button onclick="buyItem('럭잼', 20)">구매</button>
+    <p class="price">가격: 4 HBC</p>
+    <button onclick="buyItem('럭잼', 4)">구매</button>
   </div>
 
   <div class="item">
@@ -202,4 +202,19 @@
       logGlobal(`🔧 관리자님이 ${target}에게 랜덤상자를 지급했습니다.`);
 
       let history = storage.getItem(target + "_history") || "";
-      history += `✅ 관리자 지급 → 랜덤상자
+      history += `✅ 관리자 지급 → 랜덤상자\n`;
+      storage.setItem(target + "_history", history);
+
+      alert(`${target}에게 랜덤상자 지급 완료`);
+    }
+
+    window.onload = function () {
+      getUser();
+      updateDisplay();
+      showHistory();
+      showGlobalLog();
+      updateLeaderboard();
+    };
+  </script>
+</body>
+</html>
