@@ -19,13 +19,13 @@
 
   <div class="item">
     <h2>🍎 황금사과</h2>
-    <p class="price">가격: 2 HBC</p>
+    <p class="price">가격: 40 HBC</p>
     <button onclick="buyItem('황금사과', 2)">구매</button>
   </div>
 
   <div class="item">
     <h2>🍀 럭잼 (10~30%)</h2>
-    <p class="price">가격: 4 HBC</p>
+    <p class="price">가격: 20 HBC</p>
     <button onclick="buyItem('럭잼', 4)">구매</button>
   </div>
 
