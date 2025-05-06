@@ -6,7 +6,10 @@
   <style>
     body { font-family: 'Arial', sans-serif; background: #fffaf0; color: #333; text-align: center; padding: 20px; }
     h1 { font-size: 2.5em; margin-bottom: 10px; }
-    .item, .gift, .history, .leaderboard { border: 2px solid #ccc; padding: 15px; margin: 10px auto; width: 300px; border-radius: 10px; background: #fdfdfd; }
+    .item, .gift, .history, .leaderboard {
+      border: 2px solid #ccc; padding: 15px; margin: 10px auto;
+      width: 300px; border-radius: 10px; background: #fdfdfd;
+    }
     .price { font-weight: bold; color: #d2691e; }
     input, button { padding: 8px; margin-top: 5px; }
     .small { font-size: 0.9em; color: #888; }
@@ -20,14 +23,14 @@
 
   <div class="item">
     <h2>🍎 황금사과</h2>
-    <p class="price">가격: 2 HBC</p>
-    <button onclick="buyItem('황금사과', 2)">구매</button>
+    <p class="price">가격: 40 HBC</p>
+    <button onclick="buyItem('황금사과', 40)">구매</button>
   </div>
 
   <div class="item">
     <h2>🍀 럭잼 (10~30%)</h2>
-    <p class="price">가격: 4 HBC</p>
-    <button onclick="buyItem('럭잼', 4)">구매</button>
+    <p class="price">가격: 20 HBC</p>
+    <button onclick="buyItem('럭잼', 20)">구매</button>
   </div>
 
   <div class="item">
@@ -85,6 +88,7 @@
     function getUser() {
       let name = storage.getItem("current_user");
       if (!name) {
+        alert("⚠️ 디스코드 닉네임으로 정확하게 입력해주세요! 이후 변경할 수 없습니다. ⚠️");
         name = prompt("당신의 이름을 입력하세요.\n\n⚠️ *디스코드 닉네임으로 작성해주세요!* ⚠️");
         if (!name) name = "이름없음";
         storage.setItem("current_user", name);
@@ -162,13 +166,15 @@
 
     function gift() {
       const user = getUser();
-      const target = document.getElementById("targetUser").value;
+      const target = document.getElementById("targetUser").value.trim();
       const amount = parseFloat(document.getElementById("amount").value);
       if (!target || isNaN(amount) || amount <= 0) return alert("올바르게 입력해주세요.");
+      if (target === user) return alert("자기 자신에게는 보낼 수 없습니다.");
       if (getBalance(user) < amount) return alert("잔액 부족!");
 
       setBalance(user, getBalance(user) - amount);
       setBalance(target, getBalance(target) + amount);
+      logGlobal(`🎁 ${user}님이 ${target}님에게 ${amount} HBC를 선물했습니다.`);
       alert(`${target}에게 ${amount} HBC를 보냈습니다.`);
       updateDisplay();
       showGlobalLog();
@@ -181,10 +187,8 @@
 
     function adminGiveCoin() {
       if (!adminAuth()) return alert("관리자 비밀번호가 틀렸습니다.");
-
       const target = document.getElementById("adminTarget").value;
       const amount = parseFloat(document.getElementById("adminAmount").value);
-
       if (!target || isNaN(amount) || amount <= 0) return alert("입력 오류");
 
       setBalance(target, getBalance(target) + amount);
@@ -195,12 +199,10 @@
 
     function adminGiveBox() {
       if (!adminAuth()) return alert("관리자 비밀번호가 틀렸습니다.");
-
       const target = document.getElementById("adminTarget").value;
       if (!target) return alert("유저 이름을 입력해주세요.");
 
       logGlobal(`🔧 관리자님이 ${target}에게 랜덤상자를 지급했습니다.`);
-
       let history = storage.getItem(target + "_history") || "";
       history += `✅ 관리자 지급 → 랜덤상자\n`;
       storage.setItem(target + "_history", history);
