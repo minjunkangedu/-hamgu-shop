@@ -40,7 +40,6 @@
 
   <h1>✨ 햄구신교 상점 ✨</h1>
   <p>Hamgu는 거룩할지어다!</p>
-  <p><strong>⚠️ 접속 시 디스코드 닉네임으로 이름을 작성해주세요! ⚠️</strong></p>
 
   <div class="item">
     <h2>🍎 황금사과</h2>
@@ -107,6 +106,7 @@
   <div>
     <p class="small">현재 사용자: <span id="username"></span></p>
     <p class="small">잔액: <span id="balance"></span> HBC</p>
+    <p class="small">보유 아이템: <span id="inventory"></span></p>
   </div>
 
   <div class="history">
@@ -140,10 +140,22 @@
       storage.setItem(user + "_balance", amount.toString());
     }
 
+    function getInventory(user) {
+      return storage.getItem(user + "_inventory") || "";
+    }
+
+    function setInventory(user, items) {
+      storage.setItem(user + "_inventory", items);
+    }
+
     function logPurchase(user, item, cost) {
       let history = storage.getItem(user + "_history") || "";
       history += `✅ ${item} (${cost} HBC)\n`;
       storage.setItem(user + "_history", history);
+
+      let inventory = getInventory(user);
+      inventory = inventory ? inventory + `, ${item}` : item;
+      setInventory(user, inventory);
     }
 
     function logGlobal(message) {
@@ -163,6 +175,12 @@
 
     function showGlobalLog() {
       document.getElementById("globalLog").innerText = storage.getItem("global_log") || "(아직 로그 없음)";
+    }
+
+    function showInventory() {
+      const user = getUser();
+      const inventory = getInventory(user);
+      document.getElementById("inventory").innerText = inventory || "(없음)";
     }
 
     function updateDisplay() {
@@ -202,6 +220,7 @@
         showHistory();
         showGlobalLog();
         updateLeaderboard();
+        showInventory();  // 아이템 목록 갱신
       } else {
         alert("HBC가 부족합니다.");
       }
@@ -269,6 +288,7 @@
       showHistory();
       showGlobalLog();
       updateLeaderboard();
+      showInventory();  // 보유 아이템 표시
     };
   </script>
 </body>
