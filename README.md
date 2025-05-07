@@ -41,6 +41,7 @@
   <h1>✨ 햄구신교 상점 ✨</h1>
   <p>Hamgu는 거룩할지어다!</p>
 
+  <!-- 기존 아이템들 -->
   <div class="item">
     <h2>🍎 황금사과</h2>
     <p class="price">가격: 40 HBC</p>
@@ -65,16 +66,29 @@
     <button onclick="buyItem('이벤트 티켓', 20)">구매</button>
   </div>
 
+  <!-- 추가된 아이템들 -->
   <div class="item">
-    <h2>🎁 특품 말스폰알</h2>
+    <h2>🐎 말 스폰알</h2>
+    <p class="price">가격: 15 HBC</p>
+    <button onclick="buyItem('말 스폰알', 15)">구매</button>
+  </div>
+  
+  <div class="item">
+    <h2>🐎 특품말 스폰알</h2>
     <p class="price">가격: 50 HBC</p>
-    <button onclick="buyItem('특품 말스폰알', 50)">구매</button>
+    <button onclick="buyItem('말 스폰알', 50)">구매</button>
+  </div>
+  
+  <div class="item">
+    <h2>🐪 낙타</h2>
+    <p class="price">가격: 15 HBC</p>
+    <button onclick="buyItem('낙타', 15)">구매</button>
   </div>
 
   <div class="item">
-    <h2>🐪 낙타</h2>
+    <h2>🐪 특품 낙타</h2>
     <p class="price">가격: 45 HBC</p>
-    <button onclick="buyItem('낙타', 45)">구매</button>
+    <button onclick="buyItem('특품 낙타', 45)">구매</button>
   </div>
 
   <div class="gift">
@@ -106,7 +120,6 @@
   <div>
     <p class="small">현재 사용자: <span id="username"></span></p>
     <p class="small">잔액: <span id="balance"></span> HBC</p>
-    <p class="small">보유 아이템: <span id="inventory"></span></p>
   </div>
 
   <div class="history">
@@ -140,22 +153,10 @@
       storage.setItem(user + "_balance", amount.toString());
     }
 
-    function getInventory(user) {
-      return storage.getItem(user + "_inventory") || "";
-    }
-
-    function setInventory(user, items) {
-      storage.setItem(user + "_inventory", items);
-    }
-
     function logPurchase(user, item, cost) {
       let history = storage.getItem(user + "_history") || "";
       history += `✅ ${item} (${cost} HBC)\n`;
       storage.setItem(user + "_history", history);
-
-      let inventory = getInventory(user);
-      inventory = inventory ? inventory + `, ${item}` : item;
-      setInventory(user, inventory);
     }
 
     function logGlobal(message) {
@@ -175,12 +176,6 @@
 
     function showGlobalLog() {
       document.getElementById("globalLog").innerText = storage.getItem("global_log") || "(아직 로그 없음)";
-    }
-
-    function showInventory() {
-      const user = getUser();
-      const inventory = getInventory(user);
-      document.getElementById("inventory").innerText = inventory || "(없음)";
     }
 
     function updateDisplay() {
@@ -220,66 +215,9 @@
         showHistory();
         showGlobalLog();
         updateLeaderboard();
-        showInventory();  // 아이템 목록 갱신
       } else {
         alert("HBC가 부족합니다.");
       }
-    }
-
-    function gift() {
-      const user = getUser();
-      const target = document.getElementById("targetUser").value.trim();
-      const amount = parseFloat(document.getElementById("amount").value);
-      if (!target || isNaN(amount) || amount <= 0) return alert("올바르게 입력해주세요.");
-      if (target === user) return alert("자기 자신에게는 보낼 수 없습니다.");
-      if (getBalance(user) < amount) return alert("잔액 부족!");
-
-      setBalance(user, getBalance(user) - amount);
-      setBalance(target, getBalance(target) + amount);
-      logGlobal(`🎁 ${user}님이 ${target}님에게 ${amount} HBC를 선물했습니다.`);
-      alert(`${target}에게 ${amount} HBC를 보냈습니다.`);
-      updateDisplay();
-      showGlobalLog();
-      updateLeaderboard();
-    }
-
-    function adminAuth() {
-      return document.getElementById("adminPass").value === PASSWORD;
-    }
-
-    function adminGiveCoin() {
-      if (!adminAuth()) return alert("관리자 비밀번호가 틀렸습니다.");
-      const target = document.getElementById("adminTarget").value;
-      const amount = parseFloat(document.getElementById("adminAmount").value);
-      if (!target || isNaN(amount) || amount <= 0) return alert("입력 오류");
-
-      setBalance(target, getBalance(target) + amount);
-      logGlobal(`🔧 관리자님이 ${target}에게 ${amount} HBC를 지급했습니다.`);
-      alert(`${target}에게 ${amount} HBC 지급 완료`);
-      updateLeaderboard();
-    }
-
-    function adminGiveBox() {
-      if (!adminAuth()) return alert("관리자 비밀번호가 틀렸습니다.");
-      const target = document.getElementById("adminTarget").value;
-      if (!target) return alert("유저 이름을 입력해주세요.");
-
-      logGlobal(`🔧 관리자님이 ${target}에게 랜덤상자를 지급했습니다.`);
-      let history = storage.getItem(target + "_history") || "";
-      history += `✅ 관리자 지급 → 랜덤상자\n`;
-      storage.setItem(target + "_history", history);
-
-      alert(`${target}에게 랜덤상자 지급 완료`);
-      openRandomBox(target);  // 랜덤상자 자동 개봉
-    }
-
-    function openRandomBox(target) {
-      const items = ["황금사과", "럭잼", "경험치 병"];
-      const randomItem = items[Math.floor(Math.random() * items.length)];
-      const cost = randomItem === "황금사과" ? 40 : randomItem === "럭잼" ? 20 : 10;
-      logPurchase(target, randomItem, cost);
-      setBalance(target, getBalance(target) + cost); // 상자에서 받은 아이템의 가격을 추가
-      logGlobal(`${target}님이 랜덤상자를 개봉하여 '${randomItem}'을(를) 얻었습니다.`);
     }
 
     window.onload = function () {
@@ -288,7 +226,6 @@
       showHistory();
       showGlobalLog();
       updateLeaderboard();
-      showInventory();  // 보유 아이템 표시
     };
   </script>
 </body>
