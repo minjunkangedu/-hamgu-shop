@@ -233,6 +233,45 @@
       }
     }
 
+    function adminGiveCoin() {
+      const adminPassword = document.getElementById("adminPass").value;
+      if (adminPassword !== PASSWORD) {
+        alert("비밀번호가 올바르지 않습니다.");
+        return;
+      }
+
+      const targetUser = document.getElementById("adminTarget").value;
+      const addAmount = parseFloat(document.getElementById("adminAmount").value);
+
+      if (!targetUser || isNaN(addAmount) || addAmount <= 0) {
+        alert("유효한 정보를 입력해주세요.");
+        return;
+      }
+
+      let balance = getBalance(targetUser);
+      setBalance(targetUser, balance + addAmount);
+      logGlobal(`🔧 관리자님이 ${targetUser}님에게 ${addAmount} HBC를 지급했습니다.`);
+      alert(`${targetUser}님에게 ${addAmount} HBC를 지급했습니다.`);
+      updateLeaderboard();
+    }
+
+    function adminGiveBox() {
+      const adminPassword = document.getElementById("adminPass").value;
+      if (adminPassword !== PASSWORD) {
+        alert("비밀번호가 올바르지 않습니다.");
+        return;
+      }
+
+      const targetUser = document.getElementById("adminTarget").value;
+      if (!targetUser) {
+        alert("유효한 유저 이름을 입력해주세요.");
+        return;
+      }
+
+      logGlobal(`🔧 관리자님이 ${targetUser}님에게 랜덤 상자를 지급했습니다.`);
+      alert(`${targetUser}님에게 랜덤 상자가 지급되었습니다.`);
+    }
+
     function adminRemoveCoin() {
       const adminPassword = document.getElementById("adminPass").value;
       if (adminPassword !== PASSWORD) {
