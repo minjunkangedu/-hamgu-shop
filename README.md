@@ -107,6 +107,13 @@
     <input id="adminPass" type="password" placeholder="관리자 비밀번호">
   </div>
 
+  <div class="gift">
+    <h2>🔒 관리자 코인 차감</h2>
+    <input id="adminTargetRemove" placeholder="유저 이름">
+    <input id="adminAmountRemove" type="number" placeholder="차감할 코인 수량">
+    <button onclick="adminRemoveCoin()">코인 차감</button>
+  </div>
+
   <div class="history">
     <h2>📜 구매 내역</h2>
     <pre id="historyLog"></pre>
@@ -138,7 +145,13 @@
       if (!name) {
         alert("⚠️ 디스코드 닉네임으로 정확하게 입력해주세요! 이후 변경할 수 없습니다. ⚠️");
         name = prompt("당신의 이름을 입력하세요.\n\n⚠️ *디스코드 닉네임으로 작성해주세요!* ⚠️");
+
+        // 이미 등록된 이름인지 확인
         if (!name) name = "이름없음";
+        if (storage.getItem(name + "_balance")) {
+          alert("이 이름은 이미 등록된 사용자입니다. 다른 이름을 사용해주세요.");
+          return getUser();  // 재귀적으로 이름을 다시 받음
+        }
         storage.setItem("current_user", name);
       }
       document.getElementById("username").innerText = name;
@@ -217,6 +230,32 @@
         updateLeaderboard();
       } else {
         alert("HBC가 부족합니다.");
+      }
+    }
+
+    function adminRemoveCoin() {
+      const adminPassword = document.getElementById("adminPass").value;
+      if (adminPassword !== PASSWORD) {
+        alert("비밀번호가 올바르지 않습니다.");
+        return;
+      }
+
+      const targetUser = document.getElementById("adminTargetRemove").value;
+      const removeAmount = parseFloat(document.getElementById("adminAmountRemove").value);
+
+      if (!targetUser || isNaN(removeAmount) || removeAmount <= 0) {
+        alert("유효한 정보를 입력해주세요.");
+        return;
+      }
+
+      let balance = getBalance(targetUser);
+      if (balance >= removeAmount) {
+        setBalance(targetUser, balance - removeAmount);
+        logGlobal(`🔒 관리자님이 ${targetUser}님의 코인을 ${removeAmount} HBC 차감했습니다.`);
+        alert(`${targetUser}님의 코인 ${removeAmount} HBC가 차감되었습니다.`);
+        updateLeaderboard();
+      } else {
+        alert("해당 유저의 코인이 부족합니다.");
       }
     }
 
